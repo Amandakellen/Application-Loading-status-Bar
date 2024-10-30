@@ -1,5 +1,7 @@
 package com.udacity
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.Canvas
@@ -23,7 +25,7 @@ class LoadingButton @JvmOverloads constructor(
     private var buttonText: String = context.getString(R.string.button_text)
     private var loadingColor: Int = Color.BLUE
     private var completedColor: Int = ContextCompat.getColor(context, R.color.colorPrimary)
-    private var buttonColor: Int = Color.GRAY
+    private var buttonColor: Int = ContextCompat.getColor(context, R.color.colorPrimary)
     private var borderColor: Int = Color.BLACK
     private var borderWidth: Float = 4f
     private var loadingProgress = 0f
@@ -51,7 +53,7 @@ class LoadingButton @JvmOverloads constructor(
     init {
         setOnClickListener {
             if (buttonState == ButtonState.Completed) {
-                buttonState = ButtonState.Loading // Muda para Loading ao clicar
+                buttonState = ButtonState.Loading
             }
         }
     }
@@ -65,8 +67,17 @@ class LoadingButton @JvmOverloads constructor(
                 invalidate()
             }
             start()
+
+            addListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    buttonState = ButtonState.Completed
+                }
+            })
+
         }
+
     }
+
 
 
     override fun onDraw(canvas: Canvas?) {
@@ -119,6 +130,7 @@ class LoadingButton @JvmOverloads constructor(
                 }
 
                 MotionEvent.ACTION_UP -> {
+                    buttonText = context.getString(R.string.button_text)
                     buttonState = ButtonState.Completed
                     true
                 }
