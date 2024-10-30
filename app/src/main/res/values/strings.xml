@@ -17,5 +17,6 @@
     <string name="retrofit_app_radion_button">Retrofit - Type-safe HTTP client for Android and java by Square, Inc</string>
 
     <string name="button_text">Download</string>
+    <string name="button_text_loading">We are Loading</string>
 
 </resources>
