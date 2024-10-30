@@ -16,4 +16,6 @@
     <string name="load_app_radion_button">LoadApp - Current repository by Udacity</string>
     <string name="retrofit_app_radion_button">Retrofit - Type-safe HTTP client for Android and java by Square, Inc</string>
 
+    <string name="button_text">Download</string>
+
 </resources>
