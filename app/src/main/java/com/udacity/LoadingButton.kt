@@ -10,6 +10,7 @@ import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
 import kotlin.properties.Delegates
@@ -17,6 +18,8 @@ import kotlin.properties.Delegates
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
+
+    private var actionOnClick: (() -> Unit)? = null
 
     private var widthSize = 0
     private var heightSize = 0
@@ -42,23 +45,31 @@ class LoadingButton @JvmOverloads constructor(
                 startLoadingAnimation()
                 buttonText = context.getString(R.string.button_text_loading)
             }
+
             ButtonState.Completed -> {
                 loadingProgress = 0f
                 buttonText = context.getString(R.string.button_text)
                 invalidate()
             }
+
             ButtonState.Clicked -> {
-               
+
             }
         }
     }
 
     init {
         setOnClickListener {
+
             if (buttonState == ButtonState.Completed) {
                 buttonState = ButtonState.Loading
+                actionOnClick?.invoke()
             }
         }
+    }
+
+    fun setOnLoadingButtonClick(action: () -> Unit) {
+        this.actionOnClick = action
     }
 
     private fun startLoadingAnimation() {
@@ -121,11 +132,13 @@ class LoadingButton @JvmOverloads constructor(
                     buttonState = ButtonState.Clicked
                     true
                 }
+
                 MotionEvent.ACTION_UP -> {
                     buttonText = context.getString(R.string.button_text)
                     buttonState = ButtonState.Completed
                     true
                 }
+
                 else -> false
             }
         } ?: false

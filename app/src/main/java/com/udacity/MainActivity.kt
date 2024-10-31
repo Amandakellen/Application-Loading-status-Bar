@@ -32,13 +32,14 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         selectedOptionId = binding.contetMain.radioGroup.checkedRadioButtonId
         setContentView(binding.root)
-        setUpRadioButton()
+        onSelectedRadionButton()
         setSupportActionBar(binding.toolbar)
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
-//        binding.contetMain.customButton.setOnClickListener {
-//
-//        }
+
+        binding.contetMain.customButton.setOnLoadingButtonClick {
+            checkRadioButton()
+        }
     }
 
     private val receiver = object : BroadcastReceiver() {
@@ -47,11 +48,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setUpRadioButton(){
+    private fun checkRadioButton(){
         if (selectedOptionId == -1) {
-            //Toast.makeText(this, "Por favor, selecione uma opção para download", Toast.LENGTH_SHORT).show()
-        } else {
-            onSelectedRadionButton()
+            Toast.makeText(this, "Por favor, selecione uma opção para download", Toast.LENGTH_SHORT).show()
+        }else{
+            val url = when (selectedOptionId) {
+                R.id.radioButtonGlide -> GLIDE_URL
+                R.id.radioButtonUdacity -> UDACITY_URL
+                R.id.radioButtonRetrofit -> RETROFIT_URL
+                else -> null
+            }
+            Toast.makeText(this, "deu bom eim", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -60,16 +67,7 @@ class MainActivity : AppCompatActivity() {
             val selectedRadioButton = findViewById<RadioButton>(checkedId)
             val selectedText = selectedRadioButton?.text.toString()
 
-            // Exibe o texto do RadioButton selecionado
             Toast.makeText(this, "Opção selecionada: $selectedText", Toast.LENGTH_SHORT).show()
-
-            // Lógica para obter a URL e iniciar o download
-            val url = when (checkedId) {
-                R.id.radioButtonGlide -> GLIDE_URL
-                R.id.radioButtonUdacity -> UDACITY_URL
-                R.id.radioButtonRetrofit -> RETROFIT_URL
-                else -> null
-            }
 
         }
     }
