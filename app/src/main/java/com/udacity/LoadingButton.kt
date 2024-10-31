@@ -29,7 +29,7 @@ class LoadingButton @JvmOverloads constructor(
     private var loadingColor: Int = ContextCompat.getColor(context, R.color.colorPrimaryDark)
     private var completedColor: Int = ContextCompat.getColor(context, R.color.colorPrimary)
     private var buttonColor: Int = ContextCompat.getColor(context, R.color.colorPrimary)
-    private var borderColor: Int = Color.BLACK
+    private var borderColor: Int = ContextCompat.getColor(context, R.color.colorPrimary)
     private var borderWidth: Float = 4f
 
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -60,7 +60,6 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     fun setOnLoadingButtonClick() {
-        //this.actionOnClick = action
         buttonState = ButtonState.Clicked
     }
 
@@ -84,7 +83,6 @@ class LoadingButton @JvmOverloads constructor(
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        // Desenha o botão com cor de fundo
         paint.color = buttonColor
         paint.style = Paint.Style.FILL
         canvas?.drawRoundRect(
@@ -92,7 +90,6 @@ class LoadingButton @JvmOverloads constructor(
             16f, 16f, paint
         )
 
-        // Desenha a borda, se aplicável
         if (borderWidth > 0) {
             paint.color = borderColor
             paint.style = Paint.Style.STROKE
