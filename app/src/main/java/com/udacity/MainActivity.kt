@@ -9,9 +9,12 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.net.Uri
 import android.os.Bundle
+import android.widget.RadioButton
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import com.udacity.databinding.ActivityMainBinding
+import kotlin.properties.Delegates
 
 class MainActivity : AppCompatActivity() {
 
@@ -22,24 +25,52 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notificationManager: NotificationManager
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
+    private var selectedOptionId by Delegates.notNull<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        selectedOptionId = binding.contetMain.radioGroup.checkedRadioButtonId
         setContentView(binding.root)
+        setUpRadioButton()
         setSupportActionBar(binding.toolbar)
-
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
-        // TODO: Implement code below
-//        binding.custom_button.setOnClickListener {
-//            download()
+//        binding.contetMain.customButton.setOnClickListener {
+//
 //        }
     }
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+        }
+    }
+
+    private fun setUpRadioButton(){
+        if (selectedOptionId == -1) {
+            //Toast.makeText(this, "Por favor, selecione uma opção para download", Toast.LENGTH_SHORT).show()
+        } else {
+            onSelectedRadionButton()
+        }
+    }
+
+    private fun onSelectedRadionButton(){
+        binding.contetMain.radioGroup.setOnCheckedChangeListener { _, checkedId ->
+            val selectedRadioButton = findViewById<RadioButton>(checkedId)
+            val selectedText = selectedRadioButton?.text.toString()
+
+            // Exibe o texto do RadioButton selecionado
+            Toast.makeText(this, "Opção selecionada: $selectedText", Toast.LENGTH_SHORT).show()
+
+            // Lógica para obter a URL e iniciar o download
+            val url = when (checkedId) {
+                R.id.radioButtonGlide -> GLIDE_URL
+                R.id.radioButtonUdacity -> UDACITY_URL
+                R.id.radioButtonRetrofit -> RETROFIT_URL
+                else -> null
+            }
+
         }
     }
 
