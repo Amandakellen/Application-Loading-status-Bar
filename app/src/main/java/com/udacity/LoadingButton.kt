@@ -115,19 +115,21 @@ class LoadingButton @JvmOverloads constructor(
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (buttonState == ButtonState.Loading) {
+            return false
+        }
+
         return super.onTouchEvent(event) || event?.let {
             when (it.action) {
                 MotionEvent.ACTION_DOWN -> {
                     buttonState = ButtonState.Clicked
                     true
                 }
-
                 MotionEvent.ACTION_UP -> {
                     buttonText = context.getString(R.string.button_text)
                     buttonState = ButtonState.Completed
                     true
                 }
-
                 else -> false
             }
         } ?: false
