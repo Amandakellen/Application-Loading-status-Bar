@@ -32,7 +32,6 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         loadingButton = binding.contetMain.customButton
         setContentView(binding.root)
-        onSelectedRadionButton()
         setSupportActionBar(binding.toolbar)
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
@@ -63,16 +62,6 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "deu bom eim", Toast.LENGTH_SHORT).show()
             loadingButton.setOnLoadingButtonClick()
             download(url)
-        }
-    }
-
-    private fun onSelectedRadionButton() {
-        binding.contetMain.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-            val selectedRadioButton = findViewById<RadioButton>(checkedId)
-            val selectedText = selectedRadioButton?.text.toString()
-
-            Toast.makeText(this, "Opção selecionada: $selectedText", Toast.LENGTH_SHORT).show()
-
         }
     }
 
