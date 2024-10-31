@@ -17,38 +17,41 @@ import kotlin.properties.Delegates
 class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
+
     private var widthSize = 0
     private var heightSize = 0
 
     private val valueAnimator = ValueAnimator()
+    private var loadingProgress = 0f
 
     private var buttonText: String = context.getString(R.string.button_text)
-    private var loadingColor: Int = Color.BLUE
+    private var loadingColor: Int = ContextCompat.getColor(context, R.color.colorPrimaryDark)
     private var completedColor: Int = ContextCompat.getColor(context, R.color.colorPrimary)
     private var buttonColor: Int = ContextCompat.getColor(context, R.color.colorPrimary)
     private var borderColor: Int = Color.BLACK
     private var borderWidth: Float = 4f
-    private var loadingProgress = 0f
 
-    private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { p, old, new ->
+    private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
+        textSize = 40f
+        textAlign = Paint.Align.CENTER
+    }
+
+    private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { _, _, new ->
         when (new) {
             ButtonState.Loading -> {
                 startLoadingAnimation()
                 buttonText = context.getString(R.string.button_text_loading)
             }
-
             ButtonState.Completed -> {
                 loadingProgress = 0f
                 buttonText = context.getString(R.string.button_text)
                 invalidate()
-
             }
-
-            ButtonState.Clicked -> { /* Lidar com o estado de clicado */
+            ButtonState.Clicked -> {
+               
             }
         }
     }
-
 
     init {
         setOnClickListener {
@@ -67,37 +70,29 @@ class LoadingButton @JvmOverloads constructor(
                 invalidate()
             }
             start()
-
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     buttonState = ButtonState.Completed
                 }
             })
-
         }
-
     }
-
-
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
-        val paint = Paint().apply {
-            isAntiAlias = true
-            style = Paint.Style.FILL
-            color = buttonColor
-        }
-
+        // Desenha o botão com cor de fundo
+        paint.color = buttonColor
+        paint.style = Paint.Style.FILL
         canvas?.drawRoundRect(
             0f, 0f, widthSize.toFloat(), heightSize.toFloat(),
             16f, 16f, paint
         )
 
-
+        // Desenha a borda, se aplicável
         if (borderWidth > 0) {
-            paint.style = Paint.Style.STROKE
             paint.color = borderColor
+            paint.style = Paint.Style.STROKE
             paint.strokeWidth = borderWidth
             canvas?.drawRoundRect(
                 0f, 0f, widthSize.toFloat(), heightSize.toFloat(),
@@ -107,18 +102,16 @@ class LoadingButton @JvmOverloads constructor(
 
         if (buttonState == ButtonState.Loading) {
             paint.color = loadingColor
+            paint.style = Paint.Style.FILL
             canvas?.drawRect(0f, 0f, widthSize * loadingProgress, heightSize.toFloat(), paint)
         }
 
-
-        paint.style = Paint.Style.FILL
+        // Desenha o texto do botão
         paint.color = Color.WHITE
-        paint.textSize = 40f
-        val textWidth = paint.measureText(buttonText)
-        val textX = (widthSize - textWidth) / 2
-        val textY = (heightSize + paint.textSize) / 2 - 10
+        paint.style = Paint.Style.FILL
+        val textX = widthSize / 2f
+        val textY = (heightSize / 2f) - (paint.descent() + paint.ascent()) / 2
         canvas?.drawText(buttonText, textX, textY, paint)
-
     }
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -128,13 +121,11 @@ class LoadingButton @JvmOverloads constructor(
                     buttonState = ButtonState.Clicked
                     true
                 }
-
                 MotionEvent.ACTION_UP -> {
                     buttonText = context.getString(R.string.button_text)
                     buttonState = ButtonState.Completed
                     true
                 }
-
                 else -> false
             }
         } ?: false
@@ -143,14 +134,11 @@ class LoadingButton @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val minw: Int = paddingLeft + paddingRight + suggestedMinimumWidth
         val w: Int = resolveSizeAndState(minw, widthMeasureSpec, 1)
-        val h: Int = resolveSizeAndState(
-            MeasureSpec.getSize(w),
-            heightMeasureSpec,
-            0
-        )
+        val minh: Int = paddingTop + paddingBottom + suggestedMinimumHeight
+        val h: Int = resolveSizeAndState(minh, heightMeasureSpec, 0)
+
         widthSize = w
         heightSize = h
         setMeasuredDimension(w, h)
     }
-
 }
