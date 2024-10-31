@@ -19,4 +19,6 @@
     <string name="button_text">Download</string>
     <string name="button_text_loading">We are Loading</string>
 
+    <string name="empty_selected">Please select an option for download</string>
+
 </resources>

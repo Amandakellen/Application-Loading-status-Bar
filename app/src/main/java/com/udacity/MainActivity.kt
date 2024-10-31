@@ -51,17 +51,18 @@ class MainActivity : AppCompatActivity() {
     private fun checkRadioButton() {
         val selectedOptionId = binding.contetMain.radioGroup.checkedRadioButtonId
         if (selectedOptionId == -1) {
-            Toast.makeText(this, "Por favor, selecione uma opção para download", Toast.LENGTH_SHORT)
+            Toast.makeText(this, this.getString(R.string.empty_selected), Toast.LENGTH_SHORT)
                 .show()
         } else {
             val url = when (selectedOptionId) {
                 R.id.radioButtonGlide -> GLIDE_URL
                 R.id.radioButtonUdacity -> UDACITY_URL
                 R.id.radioButtonRetrofit -> RETROFIT_URL
-                else -> null
+                else -> URL
             }
             Toast.makeText(this, "deu bom eim", Toast.LENGTH_SHORT).show()
             loadingButton.setOnLoadingButtonClick()
+            download(url)
         }
     }
 
@@ -75,9 +76,9 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun download() {
+    private fun download(url: String) {
         val request =
-            DownloadManager.Request(Uri.parse(URL))
+            DownloadManager.Request(Uri.parse(url))
                 .setTitle(getString(R.string.app_name))
                 .setDescription(getString(R.string.app_description))
                 .setRequiresCharging(false)
