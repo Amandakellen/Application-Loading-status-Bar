@@ -25,19 +25,19 @@ class MainActivity : AppCompatActivity() {
     private lateinit var notificationManager: NotificationManager
     private lateinit var pendingIntent: PendingIntent
     private lateinit var action: NotificationCompat.Action
-    private var selectedOptionId by Delegates.notNull<Int>()
+    private lateinit var loadingButton: LoadingButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
-        selectedOptionId = binding.contetMain.radioGroup.checkedRadioButtonId
+        loadingButton = binding.contetMain.customButton
         setContentView(binding.root)
         onSelectedRadionButton()
         setSupportActionBar(binding.toolbar)
         registerReceiver(receiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
 
 
-        binding.contetMain.customButton.setOnLoadingButtonClick {
+        loadingButton.setOnClickListener {
             checkRadioButton()
         }
     }
@@ -48,10 +48,12 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun checkRadioButton(){
+    private fun checkRadioButton() {
+        val selectedOptionId = binding.contetMain.radioGroup.checkedRadioButtonId
         if (selectedOptionId == -1) {
-            Toast.makeText(this, "Por favor, selecione uma opção para download", Toast.LENGTH_SHORT).show()
-        }else{
+            Toast.makeText(this, "Por favor, selecione uma opção para download", Toast.LENGTH_SHORT)
+                .show()
+        } else {
             val url = when (selectedOptionId) {
                 R.id.radioButtonGlide -> GLIDE_URL
                 R.id.radioButtonUdacity -> UDACITY_URL
@@ -59,10 +61,11 @@ class MainActivity : AppCompatActivity() {
                 else -> null
             }
             Toast.makeText(this, "deu bom eim", Toast.LENGTH_SHORT).show()
+            loadingButton.setOnLoadingButtonClick()
         }
     }
 
-    private fun onSelectedRadionButton(){
+    private fun onSelectedRadionButton() {
         binding.contetMain.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val selectedRadioButton = findViewById<RadioButton>(checkedId)
             val selectedText = selectedRadioButton?.text.toString()
@@ -91,7 +94,8 @@ class MainActivity : AppCompatActivity() {
             "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter/archive/master.zip"
         private const val GLIDE_URL = "https://github.com/bumptech/glide"
         private const val RETROFIT_URL = "https://github.com/square/retrofit"
-        private const val UDACITY_URL = "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
+        private const val UDACITY_URL =
+            "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
         private const val CHANNEL_ID = "channelId"
     }
 }

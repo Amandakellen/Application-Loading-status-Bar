@@ -19,8 +19,6 @@ class LoadingButton @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
 ) : View(context, attrs, defStyleAttr) {
 
-    private var actionOnClick: (() -> Unit)? = null
-
     private var widthSize = 0
     private var heightSize = 0
 
@@ -49,27 +47,21 @@ class LoadingButton @JvmOverloads constructor(
             ButtonState.Completed -> {
                 loadingProgress = 0f
                 buttonText = context.getString(R.string.button_text)
+                valueAnimator?.cancel()
+                loadingProgress = 0f
+                buttonText = context.getString(R.string.button_text)
                 invalidate()
             }
 
             ButtonState.Clicked -> {
-
-            }
-        }
-    }
-
-    init {
-        setOnClickListener {
-
-            if (buttonState == ButtonState.Completed) {
                 buttonState = ButtonState.Loading
-                actionOnClick?.invoke()
             }
         }
     }
 
-    fun setOnLoadingButtonClick(action: () -> Unit) {
-        this.actionOnClick = action
+    fun setOnLoadingButtonClick() {
+        //this.actionOnClick = action
+        buttonState = ButtonState.Clicked
     }
 
     private fun startLoadingAnimation() {
