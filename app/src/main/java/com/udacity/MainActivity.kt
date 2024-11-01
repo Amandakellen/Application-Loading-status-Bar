@@ -1,5 +1,6 @@
 package com.udacity
 
+import android.Manifest.permission.POST_NOTIFICATIONS
 import android.app.DownloadManager
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -7,12 +8,17 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.widget.RadioButton
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import com.udacity.NotificationHelper.showDownloadNotification
 import com.udacity.databinding.ActivityMainBinding
 import kotlin.properties.Delegates
 
@@ -27,6 +33,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var action: NotificationCompat.Action
     private lateinit var loadingButton: LoadingButton
 
+    private val requestPermissionLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { isGranted: Boolean ->
+        if (isGranted!= true) {
+            Toast.makeText(this, "Permissão de notificação não concedida", Toast.LENGTH_SHORT).show()
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -37,6 +51,9 @@ class MainActivity : AppCompatActivity() {
 
 
         loadingButton.setOnClickListener {
+            requestNotificationPermission {
+                requestPermissionLauncher
+            }
             checkRadioButton()
         }
     }
@@ -77,6 +94,25 @@ class MainActivity : AppCompatActivity() {
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
+        NotificationHelper.showDownloadNotification(this)
+    }
+
+
+    private fun requestNotificationPermission(onGranted: () -> Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            when {
+                ActivityCompat.checkSelfPermission(
+                    this, POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED -> {
+                    onGranted()
+                }
+                else -> {
+                    requestPermissionLauncher.launch(POST_NOTIFICATIONS)
+                }
+            }
+        } else {
+            onGranted()
+        }
     }
 
     companion object {
