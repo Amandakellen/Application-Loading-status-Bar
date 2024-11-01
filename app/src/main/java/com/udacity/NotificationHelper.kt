@@ -32,7 +32,7 @@ object NotificationHelper {
 
     fun showDownloadNotification(context: Context, repositoryName: String, downloadStatus: String) {
         val detailIntent = Intent(context, DetailActivity::class.java).apply {
-            putExtra("REPOSITORY_NAME", repositoryName)
+            putExtra("FILE_NAME", repositoryName)
             putExtra("DOWNLOAD_STATUS", downloadStatus)
         }
 

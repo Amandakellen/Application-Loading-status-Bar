@@ -77,19 +77,17 @@ class MainActivity : AppCompatActivity() {
                 else -> URL
             }
 
+            val fileName = when (selectedOptionId) {
+                R.id.radioButtonGlide -> getString(R.string.glide_radion_button)
+                R.id.radioButtonUdacity -> getString(R.string.load_app_radion_button)
+                R.id.radioButtonRetrofit -> getString(R.string.retrofit_app_radion_button)
+                else -> URL
+            }
+
             Toast.makeText(this, "deu bom eim", Toast.LENGTH_SHORT).show()
             loadingButton.setOnLoadingButtonClick()
-            download(url, getFileName())
+            download(url, fileName)
         }
-    }
-
-    fun getFileName(): String{
-        var fileName = ""
-         binding.contetMain.radioGroup.setOnCheckedChangeListener { _, checkedId ->
-             fileName = findViewById<RadioButton>(checkedId)?.text.toString()
-        }
-
-        return fileName
     }
 
     private fun download(url: String, fileName: String) {

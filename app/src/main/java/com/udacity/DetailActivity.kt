@@ -14,6 +14,12 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
+        val repositoryName = intent.getStringExtra("FILE_NAME") ?: "Unknow file name"
+        val downloadStatus = intent.getStringExtra("DOWNLOAD_STATUS") ?: "Unknow status"
+
+        binding.contentDetail.fileName.text = repositoryName
+        binding.contentDetail.downloadStatus.text = downloadStatus
+
         binding.contentDetail.returnButton.setOnClickListener {
             finish()
         }
