@@ -122,6 +122,5 @@ class MainActivity : AppCompatActivity() {
         private const val RETROFIT_URL = "https://github.com/square/retrofit"
         private const val UDACITY_URL =
             "https://github.com/udacity/nd940-c3-advanced-android-programming-project-starter"
-        private const val CHANNEL_ID = "channelId"
     }
 }
