@@ -105,7 +105,6 @@ class MainActivity : AppCompatActivity() {
                 else -> URL
             }
 
-            Toast.makeText(this, "deu bom eim", Toast.LENGTH_SHORT).show()
             loadingButton.setOnLoadingButtonClick()
             download(url)
         }
