@@ -22,6 +22,9 @@ import com.udacity.NotificationHelper.showDownloadNotification
 import com.udacity.databinding.ActivityMainBinding
 import kotlin.properties.Delegates
 
+private const val SUCCESSFUL = "Successfull"
+private const val FAILED = "Failed"
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
@@ -36,8 +39,9 @@ class MainActivity : AppCompatActivity() {
     private val requestPermissionLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
-        if (isGranted!= true) {
-            Toast.makeText(this, "Permissão de notificação não concedida", Toast.LENGTH_SHORT).show()
+        if (isGranted != true) {
+            Toast.makeText(this, "Permissão de notificação não concedida", Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
@@ -60,7 +64,31 @@ class MainActivity : AppCompatActivity() {
 
     private val receiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
+            val selectedOptionId = binding.contetMain.radioGroup.checkedRadioButtonId
             val id = intent?.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID, -1)
+            if (id == downloadID) {
+                val downloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+                val query = DownloadManager.Query().setFilterById(downloadID)
+                val cursor = downloadManager.query(query)
+
+                if (cursor != null && cursor.moveToFirst()) {
+                    val status =
+                        cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
+                    val fileName = when (selectedOptionId) {
+                        R.id.radioButtonGlide -> getString(R.string.glide_radion_button)
+                        R.id.radioButtonUdacity -> getString(R.string.load_app_radion_button)
+                        R.id.radioButtonRetrofit -> getString(R.string.retrofit_app_radion_button)
+                        else -> URL
+                    }
+
+                    if (status == DownloadManager.STATUS_SUCCESSFUL) {
+                        showDownloadNotification(this@MainActivity, fileName, SUCCESSFUL)
+                    } else {
+                        showDownloadNotification(this@MainActivity, fileName, FAILED)
+                    }
+                }
+                cursor?.close()
+            }
         }
     }
 
@@ -77,20 +105,13 @@ class MainActivity : AppCompatActivity() {
                 else -> URL
             }
 
-            val fileName = when (selectedOptionId) {
-                R.id.radioButtonGlide -> getString(R.string.glide_radion_button)
-                R.id.radioButtonUdacity -> getString(R.string.load_app_radion_button)
-                R.id.radioButtonRetrofit -> getString(R.string.retrofit_app_radion_button)
-                else -> URL
-            }
-
             Toast.makeText(this, "deu bom eim", Toast.LENGTH_SHORT).show()
             loadingButton.setOnLoadingButtonClick()
-            download(url, fileName)
+            download(url)
         }
     }
 
-    private fun download(url: String, fileName: String) {
+    private fun download(url: String) {
         val request =
             DownloadManager.Request(Uri.parse(url))
                 .setTitle(getString(R.string.app_name))
@@ -102,7 +123,6 @@ class MainActivity : AppCompatActivity() {
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
-        NotificationHelper.showDownloadNotification(this,fileName, "teste")
     }
 
 
@@ -114,6 +134,7 @@ class MainActivity : AppCompatActivity() {
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     onGranted()
                 }
+
                 else -> {
                     requestPermissionLauncher.launch(POST_NOTIFICATIONS)
                 }
