@@ -13,5 +13,11 @@ class DetailActivity : AppCompatActivity() {
         binding = ActivityDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+
+        binding.contentDetail.returnButton.setOnClickListener {
+            finish()
+        }
+
+
     }
 }
