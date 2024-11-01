@@ -9,13 +9,13 @@
         motion:constraintSetEnd="@id/end">
 
         <OnClick
-            motion:targetId="@+id/repo_name"
+            motion:targetId="@+id/file_name"
             motion:clickAction="transitionToEnd" />
     </Transition>
 
     <ConstraintSet android:id="@+id/start">
         <Constraint
-            android:id="@id/repo_name"
+            android:id="@id/file_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             motion:layout_constraintTop_toTopOf="parent"
@@ -24,7 +24,7 @@
 
     <ConstraintSet android:id="@+id/end">
         <Constraint
-            android:id="@id/repo_name"
+            android:id="@id/file_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             motion:layout_constraintBottom_toBottomOf="parent"
