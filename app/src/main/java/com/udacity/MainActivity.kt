@@ -76,13 +76,23 @@ class MainActivity : AppCompatActivity() {
                 R.id.radioButtonRetrofit -> RETROFIT_URL
                 else -> URL
             }
+
             Toast.makeText(this, "deu bom eim", Toast.LENGTH_SHORT).show()
             loadingButton.setOnLoadingButtonClick()
-            download(url)
+            download(url, getFileName())
         }
     }
 
-    private fun download(url: String) {
+    fun getFileName(): String{
+        var fileName = ""
+         binding.contetMain.radioGroup.setOnCheckedChangeListener { _, checkedId ->
+             fileName = findViewById<RadioButton>(checkedId)?.text.toString()
+        }
+
+        return fileName
+    }
+
+    private fun download(url: String, fileName: String) {
         val request =
             DownloadManager.Request(Uri.parse(url))
                 .setTitle(getString(R.string.app_name))
@@ -94,7 +104,7 @@ class MainActivity : AppCompatActivity() {
         val downloadManager = getSystemService(DOWNLOAD_SERVICE) as DownloadManager
         downloadID =
             downloadManager.enqueue(request)// enqueue puts the download request in the queue.
-        NotificationHelper.showDownloadNotification(this)
+        NotificationHelper.showDownloadNotification(this,fileName, "teste")
     }
 
 

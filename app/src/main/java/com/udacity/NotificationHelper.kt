@@ -30,13 +30,21 @@ object NotificationHelper {
         }
     }
 
-    fun showDownloadNotification(context: Context) {
+    fun showDownloadNotification(context: Context, repositoryName: String, downloadStatus: String) {
+        val detailIntent = Intent(context, DetailActivity::class.java).apply {
+            putExtra("REPOSITORY_NAME", repositoryName)
+            putExtra("DOWNLOAD_STATUS", downloadStatus)
+        }
+
+        val pendingIntent = PendingIntent.getActivity(
+            context,
+            0,
+            detailIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+
         createNotificationChannel(context)
 
-        val intent = Intent(context, DetailActivity::class.java)
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(
-            context, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-        )
 
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.mipmap.dowload_icon_round)

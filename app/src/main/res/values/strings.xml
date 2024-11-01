@@ -20,5 +20,9 @@
     <string name="button_text_loading">We are Loading</string>
 
     <string name="empty_selected">Please select an option for download</string>
+    <string name="filename">FileName</string>
+    <string name="download_status">Download Status</string>
+    <string name="back">Back</string>
+    <string name="file_name">File Name</string>
 
 </resources>
