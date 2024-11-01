@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.provider.Settings.Global.getString
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -15,6 +16,8 @@ object NotificationHelper {
 
     private const val CHANNEL_ID = "download_channel"
     private const val NOTIFICATION_ID = 1
+    private const val FILE_NAME = "File Name: "
+    private const val DOWNLOAD_STATUS = "Dowload status: "
 
     fun createNotificationChannel(context: Context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -30,10 +33,13 @@ object NotificationHelper {
         }
     }
 
-    fun showDownloadNotification(context: Context, repositoryName: String, downloadStatus: String) {
+    fun showDownloadNotification(context: Context, fileName: String, downloadStatus: String) {
+        val fileNameText = FILE_NAME + fileName
+        val downloadStatusText = DOWNLOAD_STATUS + downloadStatus
+
         val detailIntent = Intent(context, DetailActivity::class.java).apply {
-            putExtra("FILE_NAME", repositoryName)
-            putExtra("DOWNLOAD_STATUS", downloadStatus)
+            putExtra("FILE_NAME", fileNameText)
+            putExtra("DOWNLOAD_STATUS", downloadStatusText)
         }
 
         val pendingIntent = PendingIntent.getActivity(
