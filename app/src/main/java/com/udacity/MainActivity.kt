@@ -83,8 +83,11 @@ class MainActivity : AppCompatActivity() {
 
                     if (status == DownloadManager.STATUS_SUCCESSFUL) {
                         showDownloadNotification(this@MainActivity, fileName, SUCCESSFUL)
+                        loadingButton.downloadComplete()
+
                     } else {
                         showDownloadNotification(this@MainActivity, fileName, FAILED)
+                        loadingButton.downloadComplete()
                     }
                 }
                 cursor?.close()

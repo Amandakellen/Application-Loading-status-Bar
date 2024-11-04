@@ -7,7 +7,6 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.provider.Settings.Global.getString
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -17,7 +16,7 @@ object NotificationHelper {
     private const val CHANNEL_ID = "download_channel"
     private const val NOTIFICATION_ID = 1
     private const val FILE_NAME = "File Name: "
-    private const val DOWNLOAD_STATUS = "Dowload status: "
+    private const val DOWNLOAD_STATUS = "Download status: "
 
     fun createNotificationChannel(context: Context) {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
@@ -51,7 +50,6 @@ object NotificationHelper {
 
         createNotificationChannel(context)
 
-
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setSmallIcon(R.mipmap.dowload_icon_round)
             .setContentTitle("Udacity: Android Kotlin Nanodegree")
@@ -65,7 +63,6 @@ object NotificationHelper {
                 pendingIntent
             )
 
-
         with(NotificationManagerCompat.from(context)) {
             if (ActivityCompat.checkSelfPermission(
                     context,
@@ -77,5 +74,4 @@ object NotificationHelper {
             notify(NOTIFICATION_ID, builder.build())
         }
     }
-
 }

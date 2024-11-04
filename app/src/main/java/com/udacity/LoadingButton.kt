@@ -3,10 +3,12 @@ package com.udacity
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
@@ -24,6 +26,7 @@ class LoadingButton @JvmOverloads constructor(
 
     private val valueAnimator = ValueAnimator()
     private var loadingProgress = 0f
+    private var loadingAngle = 0f
 
     private var buttonText: String = context.getString(R.string.button_text)
     private var loadingColor: Int = ContextCompat.getColor(context, R.color.colorPrimaryDark)
@@ -63,23 +66,26 @@ class LoadingButton @JvmOverloads constructor(
         buttonState = ButtonState.Clicked
     }
 
+    fun downloadComplete() {
+        buttonState = ButtonState.Completed
+    }
+
+
     private fun startLoadingAnimation() {
         valueAnimator.apply {
             setFloatValues(0f, 1f)
             duration = 2000
+            repeatCount = ValueAnimator.INFINITE
             addUpdateListener { animator ->
                 loadingProgress = animator.animatedValue as Float
+                loadingAngle += 5f
                 invalidate()
             }
             start()
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator) {
-                    buttonState = ButtonState.Completed
-                }
-            })
         }
     }
 
+    @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
 
@@ -99,14 +105,28 @@ class LoadingButton @JvmOverloads constructor(
                 16f, 16f, paint
             )
         }
-
         if (buttonState == ButtonState.Loading) {
             paint.color = loadingColor
             paint.style = Paint.Style.FILL
             canvas?.drawRect(0f, 0f, widthSize * loadingProgress, heightSize.toFloat(), paint)
+
+            paint.color = Color.WHITE
+            paint.style = Paint.Style.STROKE
+            paint.strokeWidth = 8f
+
+            val radius = heightSize / 4f
+            val centerX = widthSize / 2f
+            val centerY = heightSize / 2f
+            val oval = RectF(
+                centerX - radius, centerY - radius,
+                centerX + radius, centerY + radius
+            )
+
+            canvas?.drawArc(
+                oval, loadingAngle, 270f, false, paint
+            )
         }
 
-        // Desenha o texto do botão
         paint.color = Color.WHITE
         paint.style = Paint.Style.FILL
         val textX = widthSize / 2f

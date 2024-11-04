@@ -14,8 +14,8 @@ class DetailActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        val repositoryName = intent.getStringExtra("FILE_NAME") ?: "Unknow file name"
-        val downloadStatus = intent.getStringExtra("DOWNLOAD_STATUS") ?: "Unknow status"
+        val repositoryName = intent.getStringExtra("FILE_NAME") ?: "Unknown file name"
+        val downloadStatus = intent.getStringExtra("DOWNLOAD_STATUS") ?: "Unknown status"
 
         binding.contentDetail.fileName.text = repositoryName
         binding.contentDetail.downloadStatus.text = downloadStatus
@@ -23,7 +23,10 @@ class DetailActivity : AppCompatActivity() {
         binding.contentDetail.returnButton.setOnClickListener {
             finish()
         }
+    }
 
-
+    override fun onStart() {
+        super.onStart()
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
     }
 }
