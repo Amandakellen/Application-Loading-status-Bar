@@ -27,6 +27,7 @@ class LoadingButton @JvmOverloads constructor(
     private val valueAnimator = ValueAnimator()
     private var loadingProgress = 0f
     private var loadingAngle = 0f
+    private var textColor: Int = Color.WHITE
 
     private var buttonText: String = context.getString(R.string.button_text)
     private var loadingColor: Int = ContextCompat.getColor(context, R.color.colorPrimaryDark)
@@ -38,6 +39,17 @@ class LoadingButton @JvmOverloads constructor(
     private val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         textSize = 40f
         textAlign = Paint.Align.CENTER
+    }
+
+    init {
+        attrs?.let {
+            val typedArray = context.obtainStyledAttributes(it, R.styleable.LoadingButton, 0, 0)
+            buttonColor = typedArray.getColor(R.styleable.LoadingButton_backgroundColor, buttonColor)
+            textColor = typedArray.getColor(R.styleable.LoadingButton_textColor, Color.WHITE)
+            typedArray.recycle()
+        }
+        paint.color = buttonColor
+        paint.textSize = 50f
     }
 
     private var buttonState: ButtonState by Delegates.observable<ButtonState>(ButtonState.Completed) { _, _, new ->
