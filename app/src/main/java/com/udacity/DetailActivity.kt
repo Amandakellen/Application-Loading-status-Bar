@@ -17,10 +17,13 @@ class DetailActivity : AppCompatActivity() {
         val repositoryName = intent.getStringExtra("FILE_NAME") ?: "Unknown file name"
         val downloadStatus = intent.getStringExtra("DOWNLOAD_STATUS") ?: "Unknown status"
 
+        overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
+
         binding.contentDetail.fileName.text = repositoryName
         binding.contentDetail.downloadStatus.text = downloadStatus
 
         binding.contentDetail.returnButton.setOnClickListener {
+            overridePendingTransition(R.anim.fade_in, R.anim.fade_out)
             finish()
         }
     }
